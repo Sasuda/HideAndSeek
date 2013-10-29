@@ -26,7 +26,12 @@ public class StartGameMenu : MonoBehaviour
 	//public int numberOfAITanks = 1;
 	//int currentNumberOfPlayers;
 	
+	// HUD values
 	public HeadsUpDisplay theHeadsUpDisplay;
+	float playerScore;
+	public float minutes;
+	public float seconds;
+	public float fraction;
 	//int idNumber;
 	//public Transform playerPrefab;
 	#endregion
@@ -99,6 +104,7 @@ public class StartGameMenu : MonoBehaviour
 			//Freeze mouse movement
 			GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = false;
 			GameObject.Find("Flashlight").GetComponent<Flashlight>().enabled = false;
+			GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = false;
 			//Hide the HUD
 			theHeadsUpDisplay.headsUpDisplayActive = false;
 			
@@ -127,6 +133,7 @@ public class StartGameMenu : MonoBehaviour
 					//allow mouse movement
 					GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = true;
 					GameObject.Find("Flashlight").GetComponent<Flashlight>().enabled = true;
+					GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = true;
 					
 					//hide the menu start time
 					Time.timeScale = 1;
@@ -172,11 +179,13 @@ public class StartGameMenu : MonoBehaviour
 					//allow mouse movement
 					GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = true;
 					GameObject.Find("Flashlight").GetComponent<Flashlight>().enabled = true;
+					GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = true;
 					
 					//hide the menu start time
 					Time.timeScale = 1;
 	                menuActive = false;
 					
+					theHeadsUpDisplay.RestartTimer();
 					theHeadsUpDisplay.headsUpDisplayActive = true;
 					//theHeadsUpDisplay.ResetScore();
 					// Respwawn the player
@@ -196,6 +205,16 @@ public class StartGameMenu : MonoBehaviour
 					//GameObject.Find("First Person Controller").BroadcastMessage("ResumeWeapons");
 					*/
 	            }
+				
+				playerScore = theHeadsUpDisplay.playerScore;
+				//Calculating timer values
+				minutes = Mathf.Floor(playerScore / 60);
+				seconds = Mathf.Floor(playerScore % 60);
+				fraction = playerScore * 10;
+				fraction = fraction % 10;
+				//HUD Box
+				GUI.Box(new Rect(10, 30, 150f, 20), "");
+				GUI.Label(new Rect((Screen.width - 40f)/2, (Screen.height - menuHeight + verticalSpacing*(50.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "Your time: " + minutes + ":" + seconds + ":" + fraction.ToString("F2"));
 				//GUI.Label(new Rect((Screen.width - 40f)/2, (Screen.height - menuHeight + verticalSpacing*(50.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "Score: " + theHeadsUpDisplay.playerScore);
 			}
 			else

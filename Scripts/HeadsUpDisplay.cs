@@ -5,66 +5,101 @@ public class HeadsUpDisplay : MonoBehaviour
 {
 	#region variables
 	public bool headsUpDisplayActive;
-	public TankController thePlayerTank;
+	//public TankController thePlayerTank;
 	public StartGameMenu theStartMenu;
 	// Start timer characteristics
 	public float countdown = 3f;
-	public float currentTime = 0f; // keeps time when race has started
+	float currentTime = 0f; // keeps time when race has started
+	public float minutes;
+	public float seconds;
+	public float fraction;
+	string countdownMessage; // format displayed to user.
 	
-	int numberOfAITanks;
-	public int playerScore;
+	//int numberOfAITanks;
+	public float playerScore;
 	#endregion
 	
 	// Use this for initialization
 	void Start () 
 	{
 		// Start timer before Game starts
-		countdown = 3.0f;
+		countdown = 3f;
 		currentTime = 0f;
+		
+		//
+		currentTime.ToString();
 
 	 	headsUpDisplayActive = true;
-		playerScore = 0;
+		//playerScore = 0;
 		
-		if (thePlayerTank == null && GameObject.FindWithTag("Player"))	
-		{
-			thePlayerTank = (TankController)GameObject.FindWithTag("Player").GetComponent("TankController");
-		}
+		//if (thePlayerTank == null && GameObject.FindWithTag("Player"))	
+		//{
+		//	thePlayerTank = (TankController)GameObject.FindWithTag("Player").GetComponent("TankController");
+		//}
 		if (theStartMenu == null && GameObject.FindGameObjectWithTag("StartMenu"))	
 		{
 			theStartMenu = GameObject.FindGameObjectWithTag("StartMenu").GetComponent("StartGameMenu") as StartGameMenu;
-			numberOfAITanks = theStartMenu.numberOfAITanks;
+			//numberOfAITanks = theStartMenu.numberOfAITanks;
 		}
 	}
+	
+	#region custom methods
+	public void RestartTimer()
+	{
+		// Start timer before Game starts
+		countdown = 3f;
+		currentTime = 0f;	
+	}
+	#endregion
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		if(countdown == 0.0f)
+		//
+		if(countdown <= 0.00f)
 		{
-			 currentTime += Time.deltaTime; // start the clock
+			currentTime += Time.deltaTime; // start the clock
 		}
-		countdown -= Time.deltaTime;
-		numberOfAITanks = theStartMenu.numberOfAITanks;
+		if(countdown >= 0.00f)
+		{
+			countdown -= Time.deltaTime;
+		}
+		// Highscore
+		playerScore = currentTime;
+		
+		/*if two seekers spot the player
+		 * {
+		 * timer stops
+		 * timer float is recorded int a seperate string
+		 * retry screen pops up with time
+		 * }
+		*/
+		
+		//numberOfAITanks = theStartMenu.numberOfAITanks;
 	}
 	
 	//
 	void OnGUI()
 	{
 		if (headsUpDisplayActive)
-		{
-			//string tempPlayerString = theOwner.ToString();
-			//int playerNumber = Convert.ToInt32(tempPlayerString);
+		{			
+			//Calculating timer values
+			minutes = Mathf.Floor(currentTime / 60);
+			seconds = Mathf.Floor(currentTime % 60);
+			fraction = currentTime * 10;
+			fraction = fraction % 10;
+			//HUD Box
+			GUI.Box(new Rect(10, 30, 150f, 20), "");
+			GUI.Label(new Rect(12, 30, 110, 20), "Timer: " + minutes + ":" + seconds + ":" + fraction.ToString("F2"));
 			
-			GUI.Box(new Rect(10, 100, 175f, 80), "");
-			GUI.Label(new Rect(10, 100, 200, 20), "HUD");
-			GUI.Label(new Rect(10, 120, 200, 20), "Health = " + thePlayerTank.health);
-			GUI.Label(new Rect(10, 140, 200, 20), "Number Of Tanks = " + numberOfAITanks);
-			GUI.Label(new Rect(10, 160, 200, 20), "Enemies Destroyed = " + playerScore);
+			//GUI.Label(new Rect(10, 120, 200, 20), "Health = " + thePlayerTank.health);
+			//GUI.Label(new Rect(10, 140, 200, 20), "Number Of Tanks = " + numberOfAITanks);
+			//GUI.Label(new Rect(10, 160, 200, 20), "Enemies Destroyed = " + playerScore);
 			
 			// display the countdown to start
-		if(countdown >= 0f)
+		if(countdown >= 0.0f)
     	{ 
-			string countdownMessage = countdown.ToString();
+			countdownMessage = countdown.ToString();
 			countdownMessage  = countdownMessage.Substring(0,4);
 			GUI.Box (new Rect((Screen.width -280) / 2, (Screen.height - 40) / 2, 280, 40), "Game starts in : "+ countdownMessage);
 		}
@@ -85,21 +120,21 @@ public class HeadsUpDisplay : MonoBehaviour
 			/**/			
 		}
 	}
-	public void FindNewPlayerSpawn()
-	{
-		if (thePlayerTank == null && GameObject.FindWithTag("Player"))	
-		{
-			thePlayerTank = (TankController)GameObject.FindWithTag("Player").GetComponent("TankController");
-		}
-	}
-	public void IncreasePlayerScore()
-	{
-		playerScore += 1;
-	}
-	public void ResetScore()
-	{
-		playerScore = 0;
-	}
+	//public void FindNewPlayerSpawn()
+	//{
+	//	if (thePlayerTank == null && GameObject.FindWithTag("Player"))	
+	//	{
+	//		thePlayerTank = (TankController)GameObject.FindWithTag("Player").GetComponent("TankController");
+	//	}
+	//}
+	//public void IncreasePlayerScore()
+	//{
+	//	playerScore += 1;
+	//}
+	//public void ResetScore()
+	//{
+	//	playerScore = 0;
+	//}
 }
 /*
 public class ScoreBoard : MonoBehaviour 

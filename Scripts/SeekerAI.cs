@@ -42,7 +42,7 @@ public class SeekerAI : MonoBehaviour
 	float countdown = 3f;
 	public float currentTime = 0f; // keeps time when race has started
 	#region Seeker states
-	int currentSeekerState;
+	public int currentSeekerState;
 	public enum SeekerState
 	{
 		Wandering,

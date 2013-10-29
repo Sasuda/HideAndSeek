@@ -4,17 +4,14 @@ using System.Collections;
 public class Spawner : MonoBehaviour 
 {
 	#region variable declaration
-	public GameObject AITankUnit;
-	public Object PlayerTankUnit;
+	//public GameObject AITankUnit;
+	//public Object PlayerTankUnit;
 	public StartGameMenu theStartMenu;
-	public GameObject[] AITanks;
-	string AITankName;
-	public int tankNumber;
-	int numberOfThisTank;
-	int numberOfTankToDestroy;
+//	public GameObject[] AITanks;
+	
 	Vector3 spawnPosition;
-	public int numberOfAITanks;
-	int activeTanks;
+	//public int numberOfAITanks;
+	//int activeTanks;
 	#endregion
 	
 	// Use this for initialization
@@ -24,93 +21,93 @@ public class Spawner : MonoBehaviour
 		if (theStartMenu == null && GameObject.FindGameObjectWithTag("StartMenu"))	
 		{
 			theStartMenu = GameObject.FindGameObjectWithTag("StartMenu").GetComponent("StartGameMenu") as StartGameMenu;
-			numberOfAITanks = theStartMenu.numberOfAITanks;
-			activeTanks = 1;
+//			numberOfAITanks = theStartMenu.numberOfAITanks;
+			//activeTanks = 1;
 		}
 		else
 		{
 			Debug.Log("Menu Not found, check tags");
 		} // end if start menu exists
-		if (AITankUnit == null )//&& GameObject.FindGameObjectWithTag("EnemyTank"))	
-		{
-			//AITankUnit = GameObject.FindGameObjectWithTag("EnemyTank");
-			AITankUnit = (GameObject)Resources.Load("AITank", typeof(Object));
-		}
-		else
-		{
-			Debug.Log("AITank Not found, check tags");
-		} // end if AITank exists
-		if (PlayerTankUnit == null && GameObject.FindGameObjectWithTag("Player"))	
-		{
-			PlayerTankUnit = Resources.Load("PlayerTank", typeof(Object)); //GameObject.FindGameObjectWithTag("Player");
-		}
-		else
-		{
-			Debug.Log("Player Not found, check tags");
-		} // end if player tank exists
+		//if (AITankUnit == null )//&& GameObject.FindGameObjectWithTag("EnemyTank"))	
+//		{
+//			//AITankUnit = GameObject.FindGameObjectWithTag("EnemyTank");
+//			AITankUnit = (GameObject)Resources.Load("AITank", typeof(Object));
+//		}
+//		else
+//		{
+//			Debug.Log("AITank Not found, check tags");
+//		} // end if AITank exists
+//		if (PlayerTankUnit == null && GameObject.FindGameObjectWithTag("Player"))	
+//		{
+//			PlayerTankUnit = Resources.Load("PlayerTank", typeof(Object)); //GameObject.FindGameObjectWithTag("Player");
+//		}
+//		else
+//		{
+//			Debug.Log("Player Not found, check tags");
+//		} // end if player tank exists
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
 		//
-		numberOfAITanks = theStartMenu.numberOfAITanks;
+		//numberOfAITanks = theStartMenu.numberOfAITanks;
 		// Populate array of tanks
-		AITanks = GameObject.FindGameObjectsWithTag("EnemyTank");
-		activeTanks = AITanks.Length;
-		if(activeTanks < numberOfAITanks)
-		{
-			SpawnAITank();
-		}
-		else if(activeTanks > numberOfAITanks)
-		{
-			foreach(GameObject AITank in AITanks)
-			{
-				int.TryParse((AITankName.Split('-')[1]),out numberOfThisTank);
-				if(numberOfThisTank > numberOfAITanks)
-				{
-					numberOfTankToDestroy = numberOfThisTank;
-				}
-				
-			}
-			//Debug.Log("Name of tank to destroy" + GameObject.Find("AITank-" + numberOfTankToDestroy).name);
-			Destroy(GameObject.Find("AITank-" + numberOfTankToDestroy));
-		}
-		
-		// Populate array of tanks
-		AITanks = GameObject.FindGameObjectsWithTag("EnemyTank");
-		//AITanks.Length;
-		tankNumber = 1;
-		
-		foreach(GameObject AITank in AITanks)
-		{
-			AITankName = "AITank-" + tankNumber;
-			tankNumber += 1;
-			AITank.name = AITankName;
-			
-		}
+		//AITanks = GameObject.FindGameObjectsWithTag("EnemyTank");
+//		activeTanks = AITanks.Length;
+//		if(activeTanks < numberOfAITanks)
+//		{
+//			SpawnAITank();
+//		}
+//		else if(activeTanks > numberOfAITanks)
+//		{
+//			foreach(GameObject AITank in AITanks)
+//			{
+//				int.TryParse((AITankName.Split('-')[1]),out numberOfThisTank);
+//				if(numberOfThisTank > numberOfAITanks)
+//				{
+//					numberOfTankToDestroy = numberOfThisTank;
+//				}
+//				
+//			}
+//			//Debug.Log("Name of tank to destroy" + GameObject.Find("AITank-" + numberOfTankToDestroy).name);
+//			Destroy(GameObject.Find("AITank-" + numberOfTankToDestroy));
+//		}
+//		
+//		// Populate array of tanks
+//		AITanks = GameObject.FindGameObjectsWithTag("EnemyTank");
+//		//AITanks.Length;
+//		tankNumber = 1;
+//		
+//		foreach(GameObject AITank in AITanks)
+//		{
+//			AITankName = "AITank-" + tankNumber;
+//			tankNumber += 1;
+//			AITank.name = AITankName;
+//			
+//		}
 		
 	}
 	
-	public void SpawnAITank()
-	{
-		Debug.Log("Spawning enemy");
-		// Randomize starting location
-		spawnPosition.x = 30.0f*UnityEngine.Random.value + 10f;
-		spawnPosition.y = 11.0f;
-		spawnPosition.z = 30.0f*UnityEngine.Random.value + 10f;
-		GameObject Enemy = (GameObject) Instantiate(AITankUnit, spawnPosition, Quaternion.identity); //gameObject.transform.position
-		 //GameObject instance = Instantiate(Resources.Load("enemy", typeof(GameObject)));
-	}
-	public void SpawnPlayerTank()
-	{
-		Debug.Log("Spawning player");
-		// Randomize starting location
-		spawnPosition.x = 40.0f*UnityEngine.Random.value - 40f;
-		spawnPosition.y = 11.0f;
-		spawnPosition.z = 60.0f*UnityEngine.Random.value - 40f;
-		GameObject Player = (GameObject)Instantiate(PlayerTankUnit, spawnPosition, Quaternion.identity) as GameObject; //gameObject.transform.position
-	}
+//	public void SpawnAITank()
+//	{
+//		Debug.Log("Spawning enemy");
+//		// Randomize starting location
+//		spawnPosition.x = 30.0f*UnityEngine.Random.value + 10f;
+//		spawnPosition.y = 11.0f;
+//		spawnPosition.z = 30.0f*UnityEngine.Random.value + 10f;
+//		GameObject Enemy = (GameObject) Instantiate(AITankUnit, spawnPosition, Quaternion.identity); //gameObject.transform.position
+//		 //GameObject instance = Instantiate(Resources.Load("enemy", typeof(GameObject)));
+//	}
+//	public void SpawnPlayerTank()
+//	{
+//		Debug.Log("Spawning player");
+//		// Randomize starting location
+//		spawnPosition.x = 40.0f*UnityEngine.Random.value - 40f;
+//		spawnPosition.y = 11.0f;
+//		spawnPosition.z = 60.0f*UnityEngine.Random.value - 40f;
+//		GameObject Player = (GameObject)Instantiate(PlayerTankUnit, spawnPosition, Quaternion.identity) as GameObject; //gameObject.transform.position
+//	}
 }
 /* Refrence
  * // AUTHOR:Garth de Wet (Corrupted Heart)
