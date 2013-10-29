@@ -18,6 +18,8 @@ public class SeekerAI : MonoBehaviour
 	Waypoint3 targetWaypoint;
 	Waypoint3 tempWaypoint;
 	GameObject[] otherWayPoints;
+	Waypoint3 closestWaypointToPlayer;
+	Waypoint3 closestWaypointToSeekerThatFoundPlayer;
 	// seeker characteristics
 	float lockPosition = 0.0f;
 	float minHeight = 1.75f;
@@ -188,15 +190,64 @@ public class SeekerAI : MonoBehaviour
 			{
 				seekerThatFoundPlayer = otherSeeker;
 			}
+		}// end of foreach(GameObject otherSeeker in otherSeekers)
+		
+		closestWaypointToSeekerThatFoundPlayer = currentLocation;
+		foreach(GameObject possibleNearestWaypoint in otherWayPoints)
+		{
+			if(Vector3.Distance(seekerThatFoundPlayer.transform.position, possibleNearestWaypoint.transform.position) < Vector3.Distance(seekerThatFoundPlayer.transform.position, closestWaypointToSeekerThatFoundPlayer.transform.position))
+			{
+				closestWaypointToSeekerThatFoundPlayer = (Waypoint3)possibleNearestWaypoint.GetComponent("Waypoint3");
+			}
+		} 
+		destination = closestWaypointToSeekerThatFoundPlayer;
+		
+		if(!moving)
+		{
+			for(int waypointIndex = 0; waypointIndex < currentLocation.connections.Count; waypointIndex++)
+			{
+				if(!initialTarget)
+				{
+					targetWaypoint = currentLocation.connections[waypointIndex];
+					distanceToNextWaypoint = Vector3.Distance(targetWaypoint.transform.position, destination.transform.position);
+					if(Vector3.Distance(currentLocation.transform.position, destination.transform.position) > distanceToNextWaypoint)
+					{
+						tempWaypoint = targetWaypoint;
+						initialTarget = true;
+					}
+				}
+				else
+				{
+					if(Vector3.Distance(tempWaypoint.transform.position, destination.transform.position) > distanceToNextWaypoint)
+					{
+						tempWaypoint = targetWaypoint;
+						//initTarget = true;
+					}
+				}// End if(!initTarget)
+			}// end of for loop
+			moving = true;
+			startTime = Time.time;
 		}
-    	transform.position = Vector3.MoveTowards(currentLocation.transform.position, seekerThatFoundPlayer.transform.position, step);
+		else
+		{
+			
+			float fracComplete = speed*(Time.time - startTime)/journeyTime;
+			transform.position = Vector3.Slerp(currentLocation.transform.position, tempWaypoint.transform.position , fracComplete);
+			if(fracComplete >= 1.0f)
+			{
+				moving = false;
+				arrived = true;
+				initialTarget = false;
+				currentLocation = tempWaypoint;
+			}
+		}//End if(!moving)
+    	transform.position = Vector3.MoveTowards(this.gameObject.transform.position, seekerThatFoundPlayer.transform.position, step);
 	}
 	
 	private void ChasePlayer()
 	{
 		Debug.Log("Chasing Player.");
 		// 
-		Waypoint3 closestWaypointToPlayer;
 		closestWaypointToPlayer = currentLocation;
 		foreach(GameObject possibleNearestWaypoint in otherWayPoints)
 		{
@@ -253,53 +304,48 @@ public class SeekerAI : MonoBehaviour
 	void Wander()
 	{
 		int randomLocationIndex;
-			randomLocationIndex = (int)Random.Range(0,3);
-			//if(!arrived)
-			//{
-				if(!moving)
+		randomLocationIndex = (int)Random.Range(0,3);
+		
+			if(!moving)
+			{
+				for(int waypointIndex = 0; waypointIndex < currentLocation.connections.Count; waypointIndex++)
 				{
-					for(int waypointIndex = 0; waypointIndex < currentLocation.connections.Count; waypointIndex++)
+					if(!initialTarget)
 					{
-						if(!initialTarget)
-						{
-	 						targetWaypoint = currentLocation.connections[randomLocationIndex];
-							distanceToNextWaypoint = Vector3.Distance(targetWaypoint.transform.position, destination.transform.position);
-							tempWaypoint = targetWaypoint;
-							initialTarget = true;
-						}
-						else
-						{
-							if(Vector3.Distance(tempWaypoint.transform.position, destination.transform.position) > distanceToNextWaypoint)
-							{
-								tempWaypoint = targetWaypoint;
-								//initTarget = true;
-							}
-						}// End if(!initTarget)
-					}// end of for loop
-					moving = true;
-					startTime = Time.time;
-				}
-				else
-				{
-					// Move to target
-		        	//step = speed * Time.deltaTime;
-		        	//transform.position = Vector3.MoveTowards(currentLocation.transform.position, tempWaypoint.transform.position, step);
-					
-					float fracComplete = speed*(Time.time - startTime)/journeyTime;
-					transform.position = Vector3.Slerp(currentLocation.transform.position, tempWaypoint.transform.position , fracComplete);
-					if(fracComplete >= 1.0f)
-					{
-						moving = false;
-						arrived = true;
-						initialTarget = false;
-						currentLocation = tempWaypoint;
+ 						targetWaypoint = currentLocation.connections[randomLocationIndex];
+						distanceToNextWaypoint = Vector3.Distance(targetWaypoint.transform.position, destination.transform.position);
+						tempWaypoint = targetWaypoint;
+						initialTarget = true;
 					}
-				}//End if(!moving)
-			//}
-			//else
-			//{
+					else
+					{
+						if(Vector3.Distance(tempWaypoint.transform.position, destination.transform.position) > distanceToNextWaypoint)
+						{
+							tempWaypoint = targetWaypoint;
+							//initTarget = true;
+						}
+					}// End if(!initTarget)
+				}// end of for loop
+				moving = true;
+				startTime = Time.time;
+			}
+			else
+			{
+				// Move to target
+	        	//step = speed * Time.deltaTime;
+	        	//transform.position = Vector3.MoveTowards(currentLocation.transform.position, tempWaypoint.transform.position, step);
 				
-			//} //End if(!arrived)
+				float fracComplete = speed*(Time.time - startTime)/journeyTime;
+				transform.position = Vector3.Slerp(currentLocation.transform.position, tempWaypoint.transform.position , fracComplete);
+				if(fracComplete >= 1.0f)
+				{
+					moving = false;
+					arrived = true;
+					initialTarget = false;
+					currentLocation = tempWaypoint;
+				}
+			}//End if(!moving)
+			
 	}
 	
 	// Update is called once per frame
@@ -313,23 +359,15 @@ public class SeekerAI : MonoBehaviour
 		{
 			currentSeekerState = (int)SeekerState.FoundPlayer;
 		}
-		else if(isPlayerEscaped == true)
-		{
-			currentSeekerState = (int)SeekerState.Wandering;
-		}// end if in range
+//		else if(isPlayerEscaped == true)
+//		{
+//			currentSeekerState = (int)SeekerState.Wandering;
+//		}// end if in range
 		
 		Debug.Log("PreseekerState firing, Seeker state = " + currentSeekerState);
 		
-		#region SeekerState is Wandering
-		if(currentSeekerState == (int)SeekerState.Wandering)
-		{
-			Wander();
-
-		}
-#endregion
-		
-#region FoundPlayer
-		else if(currentSeekerState == (int)SeekerState.FoundPlayer)
+		#region SeekerState is FoundPlayer
+		if(currentSeekerState == (int)SeekerState.FoundPlayer)
 		{
 			if(isPlayerInSpottedRange == true)
 			{
@@ -371,6 +409,14 @@ public class SeekerAI : MonoBehaviour
 			*/
 
 			}
+		}
+		
+#endregion
+		
+#region Wandering
+		else if(currentSeekerState == (int)SeekerState.Wandering)
+		{
+			Wander();
 
 		}
 #endregion
@@ -394,13 +440,6 @@ public class SeekerAI : MonoBehaviour
 				}*/
 				// change state to found player
 				currentSeekerState = (int)SeekerState.FoundPlayer;
-			}
-			else if(isPlayerEscaped == true)
-			{
-				/*foreach(GameObject otherSeeker in otherSeekers)
-				{
-					otherSeeker.BroadcastMessage("ChangeState(((int)SeekerState.Wandering))");
-				}*/
 			}
 			else
 			{
