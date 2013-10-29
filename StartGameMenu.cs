@@ -21,12 +21,17 @@ public class StartGameMenu : MonoBehaviour
 	//public GameObject[] AITanks;
 	//public int tankNumber = 1;
 	//string AITankName;
-	//Spawner theSpawner;
+	Spawner theSpawner;
 	//TankController thePlayerTank;
-	//public int numberOfAITanks = 1;
+	public int numberOfSeekers = 2;
 	//int currentNumberOfPlayers;
 	
+	// HUD values
 	public HeadsUpDisplay theHeadsUpDisplay;
+	float playerScore;
+	public float minutes;
+	public float seconds;
+	public float fraction;
 	//int idNumber;
 	//public Transform playerPrefab;
 	#endregion
@@ -42,14 +47,16 @@ public class StartGameMenu : MonoBehaviour
 		{
 			Debug.Log("HeadsUpDisplay found");
 		} // end if HeadsUpDisplay exists
-		//if (theSpawner == null && GameObject.FindGameObjectWithTag("Spawner"))	
-		//{
-		//	theSpawner = (Spawner)GameObject.FindGameObjectWithTag("Spawner").GetComponent("Spawner");
-		//}
-		//else
-		//{
-		//	Debug.Log("Spawner found");
-		//} // end if Spawner exists
+		
+/*		if (theSpawner == null && GameObject.FindGameObjectWithTag("Spawner"))	
+		{
+			theSpawner = (Spawner)GameObject.FindGameObjectWithTag("Spawner").GetComponent("Spawner");
+		}
+		else
+		{
+			Debug.Log("Spawner found");
+		} // end if Spawner exists
+				 */
 		//if (thePlayerTank == null && GameObject.FindGameObjectWithTag("Player"))	
 		//{
 		//	thePlayerTank = (TankController)GameObject.FindGameObjectWithTag("Player").GetComponent("TankController");
@@ -68,9 +75,12 @@ public class StartGameMenu : MonoBehaviour
 		//	Debug.Log("TankFound");
 		//} // end if PlayerTank exists
 		//idNumber = 1;
-		//numberOfAITanks = 1;
+		
+		numberOfSeekers = 2;
+		
 		 /*if(Application.loadedLevelName == "Multiplayer Coin Collection")
 		{*/
+		
 		menuActive = true;
 		retryMenu = false;
 		startMenuActive = true;
@@ -96,38 +106,44 @@ public class StartGameMenu : MonoBehaviour
 		
         if (menuActive)
         {
+			//Freeze mouse movement
+			GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = false;
+			GameObject.Find("Flashlight").GetComponent<Flashlight>().enabled = false;
+			GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = false;
+			//Hide the HUD
 			theHeadsUpDisplay.headsUpDisplayActive = false;
+			
+			//Start menu
 			if(startMenuActive)
 			{
 	            GUI.Box(new Rect((Screen.width - menuWidth) / 2.0f, (Screen.height - menuHeight) / 2.0f, menuWidth, menuHeight), "Click start when ready to begin.");
 				Time.timeScale = 0.0f;
-				/*
-				GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = false;
-				GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = false;
-				//GameObject.Find("First Person Controller").BroadcastMessage("PauseWeapons");
-				*/
-				 //if (GUI.Button(new Rect((Screen.width - buttonWidth)*(1.0f/3.0f), (Screen.height - menuHeight + verticalSpacing*(19.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "<< Less"))
-	            //{
-					//if(numberOfAITanks > 1)
-					//{
-					//	numberOfAITanks = numberOfAITanks -1;
-					//}
-				//}
-				//GUI.Label(new Rect((Screen.width)/2, (Screen.height - menuHeight + verticalSpacing*(25.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), numberOfAITanks.ToString());
-				//if (GUI.Button(new Rect(((Screen.width - buttonWidth)*(2.0f/3.0f)), (Screen.height - menuHeight + verticalSpacing*(19.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "More >>"))
-	            //{
-				//	if(numberOfAITanks < 10)
-				//	{
-				//		numberOfAITanks = numberOfAITanks +1;
-				//	}
-				//}
+				 if (GUI.Button(new Rect((Screen.width - buttonWidth)*(1.0f/3.0f), (Screen.height - menuHeight + verticalSpacing*(19.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "<< Less"))
+	            {
+					if(numberOfSeekers > 2)
+					{
+						numberOfSeekers = numberOfSeekers -1;
+					}
+				}
+				GUI.Label(new Rect((Screen.width)/2, (Screen.height - menuHeight + verticalSpacing*(25.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), numberOfSeekers.ToString());
+				if (GUI.Button(new Rect(((Screen.width - buttonWidth)*(2.0f/3.0f)), (Screen.height - menuHeight + verticalSpacing*(19.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "More >>"))
+	            {
+					if(numberOfSeekers < 4)
+					{
+						numberOfSeekers = numberOfSeekers +1;
+					}
+				}
 	            if (GUI.Button(new Rect((Screen.width - buttonWidth) / 2.0f, (Screen.height - menuHeight + verticalSpacing) / 2 + 30, buttonWidth, buttonHeight), "Start"))
 	            {
+					//allow mouse movement
+					GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = true;
+					GameObject.Find("Flashlight").GetComponent<Flashlight>().enabled = true;
+					GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = true;
+					
+					//hide the menu start time
 					Time.timeScale = 1;
 	                menuActive = false;
-					/*GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = true;
-					GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = true;
-					*/
+					
 					theHeadsUpDisplay.headsUpDisplayActive = true;
 					// Randomize starting location
 					Vector3 spawnPosition;
@@ -142,6 +158,7 @@ public class StartGameMenu : MonoBehaviour
 					*/
 	            }
 			}
+			//Retry menu
 			else if(retryMenu)
 			{
 				Time.timeScale = 0.0f;
@@ -149,26 +166,31 @@ public class StartGameMenu : MonoBehaviour
 				GUI.Box(new Rect((Screen.width - menuWidth) / 2.0f, (Screen.height - menuHeight) / 2.0f, menuWidth, menuHeight), "Click Retry when ready to begin.");
 				 if (GUI.Button(new Rect((Screen.width - buttonWidth)*(1.0f/3.0f), (Screen.height - menuHeight + verticalSpacing*(19.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "<< Less"))
 	            {
-					//if(numberOfAITanks > 1)
-					//{
-					//	numberOfAITanks = numberOfAITanks -1;
-					//}
+					if(numberOfSeekers > 2)
+					{
+						numberOfSeekers = numberOfSeekers -1;
+					}
 				}
-				//GUI.Label(new Rect((Screen.width)/2, (Screen.height - menuHeight + verticalSpacing*(25.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), numberOfAITanks.ToString());
+				GUI.Label(new Rect((Screen.width)/2, (Screen.height - menuHeight + verticalSpacing*(25.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), numberOfSeekers.ToString());
 				if (GUI.Button(new Rect(((Screen.width - buttonWidth)*(2.0f/3.0f)), (Screen.height - menuHeight + verticalSpacing*(19.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "More >>"))
 	            {
-					//if(numberOfAITanks < 10)
-					//{
-					//	numberOfAITanks = numberOfAITanks +1;
-					//}
+					if(numberOfSeekers < 4)
+					{
+						numberOfSeekers = numberOfSeekers +1;
+					}
 				}
 	            if (GUI.Button(new Rect((Screen.width - buttonWidth) / 2.0f, (Screen.height - menuHeight + verticalSpacing) / 2 + 30, buttonWidth, buttonHeight), "Retry"))
 	            {
+					//allow mouse movement
+					GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = true;
+					GameObject.Find("Flashlight").GetComponent<Flashlight>().enabled = true;
+					GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = true;
+					
+					//hide the menu start time
 					Time.timeScale = 1;
 	                menuActive = false;
-					/*GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = true;
-					GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = true;
-					*/
+					
+					theHeadsUpDisplay.RestartTimer();
 					theHeadsUpDisplay.headsUpDisplayActive = true;
 					//theHeadsUpDisplay.ResetScore();
 					// Respwawn the player
@@ -188,6 +210,17 @@ public class StartGameMenu : MonoBehaviour
 					//GameObject.Find("First Person Controller").BroadcastMessage("ResumeWeapons");
 					*/
 	            }
+				
+				playerScore = theHeadsUpDisplay.playerScore;
+				//Calculating timer values
+				minutes = Mathf.Floor(playerScore / 60);
+				seconds = Mathf.Floor(playerScore % 60);
+				fraction = playerScore * 10;
+				fraction = fraction % 10;
+				
+				//HUD Box
+				GUI.Box(new Rect(10, 30, 150f, 20), "");
+				GUI.Label(new Rect((Screen.width - 40f)/2, (Screen.height - menuHeight + verticalSpacing*(50.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "Your time: " + minutes + ":" + seconds + ":" + fraction.ToString("F2"));
 				//GUI.Label(new Rect((Screen.width - 40f)/2, (Screen.height - menuHeight + verticalSpacing*(50.0f/2.0f)) / 2 + 30, buttonWidth, buttonHeight), "Score: " + theHeadsUpDisplay.playerScore);
 			}
 			else
@@ -196,9 +229,9 @@ public class StartGameMenu : MonoBehaviour
 				Time.timeScale = 0.0f;
 				if (GUI.Button(new Rect((Screen.width - buttonWidth) / 2.0f, (Screen.height - menuHeight + verticalSpacing) / 2 + 30, buttonWidth, buttonHeight), "Unpause"))
 	            {					
-					/*GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = true;
+					GameObject.Find("First Person Controller").GetComponent<MouseLook>().enabled = true;
 					GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = true;
-					*/
+					
 					theHeadsUpDisplay.headsUpDisplayActive = true;
 					Time.timeScale = 1;
 	                menuActive = false;
