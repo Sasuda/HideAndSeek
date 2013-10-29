@@ -58,6 +58,7 @@ public class HeadsUpDisplay : MonoBehaviour
 		/*if two seekers spot the player
 		 * {
 		 * timer stops
+		 * timer float is frecorded int a seperate string
 		 * retry screen pops up with time
 		 * }
 		*/
