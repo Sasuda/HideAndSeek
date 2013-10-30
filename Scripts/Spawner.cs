@@ -4,7 +4,7 @@ using System.Collections;
 public class Spawner : MonoBehaviour 
 {
 	#region variable declaration
-	//public GameObject AITankUnit;
+	public GameObject NormalSeeker;
 	public Object PlayerFirstPerson;
 	public StartGameMenu theStartMenu;
 //	public GameObject[] AITanks;
@@ -28,15 +28,14 @@ public class Spawner : MonoBehaviour
 		{
 			Debug.Log("Menu Not found, check tags");
 		} // end if start menu exists
-		//if (AITankUnit == null )//&& GameObject.FindGameObjectWithTag("EnemyTank"))	
-//		{
-//			//AITankUnit = GameObject.FindGameObjectWithTag("EnemyTank");
-//			AITankUnit = (GameObject)Resources.Load("AITank", typeof(Object));
-//		}
-//		else
-//		{
-//			Debug.Log("AITank Not found, check tags");
-//		} // end if AITank exists
+		if (NormalSeeker == null )
+		{
+			NormalSeeker = (GameObject)Resources.Load("NormalSeeker", typeof(Object));
+		}
+		else
+		{
+			Debug.Log("AITank Not found, check tags");
+		} // end if AITank exists
 		if (PlayerFirstPerson == null && GameObject.FindGameObjectWithTag("Player"))	
 		{
 			PlayerFirstPerson = Resources.Load("PlayerFirstPerson", typeof(Object)); //GameObject.FindGameObjectWithTag("Player");
@@ -89,16 +88,16 @@ public class Spawner : MonoBehaviour
 		
 	}
 	
-//	public void SpawnAITank()
-//	{
-//		Debug.Log("Spawning enemy");
-//		// Randomize starting location
-//		spawnPosition.x = 30.0f*UnityEngine.Random.value + 10f;
-//		spawnPosition.y = 11.0f;
-//		spawnPosition.z = 30.0f*UnityEngine.Random.value + 10f;
-//		GameObject Enemy = (GameObject) Instantiate(AITankUnit, spawnPosition, Quaternion.identity); //gameObject.transform.position
-//		 //GameObject instance = Instantiate(Resources.Load("enemy", typeof(GameObject)));
-//	}
+	public void SpawnNormalSeekerAI()
+	{
+		Debug.Log("Spawning enemy");
+		// Randomize starting location
+		spawnPosition.x = 30.0f*UnityEngine.Random.value + 10f;
+		spawnPosition.y = 11.0f;
+		spawnPosition.z = 30.0f*UnityEngine.Random.value + 10f;
+		GameObject Enemy = (GameObject) Instantiate(NormalSeeker, spawnPosition, Quaternion.identity); //gameObject.transform.position
+		 //GameObject instance = Instantiate(Resources.Load("NormalSeeker", typeof(GameObject)));
+	}
 	public void SpawnPlayer()
 	{
 		Debug.Log("Spawning player");
