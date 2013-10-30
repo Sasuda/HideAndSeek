@@ -16,7 +16,7 @@ public class HeadsUpDisplay : MonoBehaviour
 	public float seconds;
 	public float fraction;
 	string countdownMessage; // format displayed to user.
-	public float sprintTimer;
+	public Sprint theSprint;
 	
 	public float playerScore;
 	#endregion
@@ -70,14 +70,6 @@ public class HeadsUpDisplay : MonoBehaviour
 		// Highscore
 		playerScore = currentTime;
 		
-		/*if two seekers spot the player
-		 * {
-		 * timer stops
-		 * timer float is recorded int a seperate string
-		 * retry screen pops up with time
-		 * }
-		*/
-		
 		//numberOfAITanks = theStartMenu.numberOfAITanks;
 	}
 	
@@ -92,28 +84,11 @@ public class HeadsUpDisplay : MonoBehaviour
 			fraction = currentTime * 10;
 			fraction = fraction % 10;
 			
-			//Calculating Sprinting
-			sprintTimer = 4f;
-			/*if()
-			{
-				if(sprintTimer >= 0)
-				{
-					sprintTimer -= Time.deltaTime;
-				}
-			}
-			if()
-			{
-				if(sprintTimer < 4)
-				{
-					sprintTimer += Time.deltaTime;
-				}
-			}
-			*/
 			//HUD Box
 			GUI.Box(new Rect(10, 30, 150f, 65), "");//left, top, width, height
 			GUI.Label(new Rect(20, 30, 110, 20), "Timer: " + minutes + ":" + seconds + ":" + fraction.ToString("F2"));
 			GUI.Label(new Rect(20, 50, 150, 20), "Number Of Seekers: " + theStartMenu.numberOfSeekers);			
-			GUI.Label(new Rect(20, 70, 190, 20), "Sprint Time: " + sprintTimer.ToString("F2"));
+			GUI.Label(new Rect(20, 70, 190, 20), "Sprint Time: " + theSprint.runTimer.ToString("F2"));
 			
 			//alert box and message
 			GUI.Box(new Rect(10, 90, 275f, 65), "");//left, top, width, height
@@ -125,7 +100,9 @@ public class HeadsUpDisplay : MonoBehaviour
 			/*if()
 			{
 				GUI.Box(new Rect(10, 90, 210f, 65), "");//left, top, width, height
-				GUI.Label(new Rect(20, 100, 200, 20), "A Seeker has Detected your Presence, Get Away Before Renforcements Arrive");
+				GUI.Label(new Rect(20, 100, 200, 20), "A Seeker has Found your Location,");
+				GUI.Label(new Rect((Screen.width -280) / 2, ((Screen.height / 2)-40), 275, 40), "-Get Away Before the other Seekers Arrive");
+
 			}
 			*/
 			// display the countdown to start
