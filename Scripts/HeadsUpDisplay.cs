@@ -7,6 +7,7 @@ public class HeadsUpDisplay : MonoBehaviour
 	public bool headsUpDisplayActive;
 	//public TankController thePlayerTank;
 	public StartGameMenu theStartMenu;
+	
 	// Start timer characteristics
 	public float countdown = 3f;
 	float currentTime = 0f; // keeps time when race has started
@@ -15,7 +16,6 @@ public class HeadsUpDisplay : MonoBehaviour
 	public float fraction;
 	string countdownMessage; // format displayed to user.
 	
-	//int numberOfAITanks;
 	public float playerScore;
 	#endregion
 	
@@ -64,6 +64,7 @@ public class HeadsUpDisplay : MonoBehaviour
 		{
 			countdown -= Time.deltaTime;
 		}
+		
 		// Highscore
 		playerScore = currentTime;
 		
@@ -89,13 +90,12 @@ public class HeadsUpDisplay : MonoBehaviour
 			fraction = currentTime * 10;
 			fraction = fraction % 10;
 			//HUD Box
-			GUI.Box(new Rect(10, 30, 150f, 20), "");
-			GUI.Label(new Rect(12, 30, 110, 20), "Timer: " + minutes + ":" + seconds + ":" + fraction.ToString("F2"));
+			GUI.Box(new Rect(10, 30, 150f, 45), "");//left, top, width, height
+			GUI.Label(new Rect(20, 30, 110, 20), "Timer: " + minutes + ":" + seconds + ":" + fraction.ToString("F2"));
 			
 			//GUI.Label(new Rect(10, 120, 200, 20), "Health = " + thePlayerTank.health);
-			//GUI.Label(new Rect(10, 140, 200, 20), "Number Of Tanks = " + numberOfAITanks);
-			//GUI.Label(new Rect(10, 160, 200, 20), "Enemies Destroyed = " + playerScore);
-			
+			GUI.Label(new Rect(20, 50, 150, 20), "Number Of Seekers: " + theStartMenu.numberOfSeekers);			//GUI.Label(new Rect(10, 160, 200, 20), "Enemies Destroyed = " + playerScore);	
+
 			// display the countdown to start
 		if(countdown >= 0.0f)
     	{ 

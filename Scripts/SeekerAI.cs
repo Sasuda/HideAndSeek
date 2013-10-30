@@ -108,7 +108,7 @@ public class SeekerAI : MonoBehaviour
 		else
 		{
 			Debug.Log("otherSeekers assigned");
-		} // end if Player exists
+		} // end if otherSeekers exists
 		#endregion
 //		if (theHeadsUpDisplay == null && GameObject.FindGameObjectWithTag("HeadsUpDisplay"))	
 //		{
@@ -353,7 +353,7 @@ public class SeekerAI : MonoBehaviour
 	{
 		//
 	    transform.rotation = Quaternion.Euler(lockPosition, lockPosition, lockPosition);
-		transform.position = new Vector3(transform.position.x, minHeight, transform.position.z);
+		transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		CheckProximity();
 		if(isPlayerInSpottedRange == true)
 		{

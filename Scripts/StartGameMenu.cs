@@ -18,12 +18,13 @@ public class StartGameMenu : MonoBehaviour
 	public float gameStart = 0f;
 	//game object management
 	//GameObject theAllAITanks;
-	//public GameObject[] AITanks;
 	//public int tankNumber = 1;
 	//string AITankName;
+	GameObject[] otherSeekers;
 	Spawner theSpawner;
 	//TankController thePlayerTank;
 	public int numberOfSeekers = 2;
+	int numberOfSeekersThatFoundPlayer;
 	//int currentNumberOfPlayers;
 	
 	// HUD values
@@ -47,6 +48,23 @@ public class StartGameMenu : MonoBehaviour
 		{
 			Debug.Log("HeadsUpDisplay found");
 		} // end if HeadsUpDisplay exists
+		#region otherSeekers
+		if (otherSeekers == null)	
+		{
+			if(GameObject.FindGameObjectsWithTag("Seeker") != null)
+			{
+				otherSeekers = GameObject.FindGameObjectsWithTag("Seeker");
+			}
+			else
+			{
+				Debug.Log("otherSeekers not found, check that gameObjects in scene are tagged.");
+			}
+		}
+		else
+		{
+			Debug.Log("otherSeekers assigned");
+		} // end if otherSeekers exists
+		#endregion
 		
 /*		if (theSpawner == null && GameObject.FindGameObjectWithTag("Spawner"))	
 		{
@@ -90,9 +108,24 @@ public class StartGameMenu : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		//Check if lost
+		numberOfSeekersThatFoundPlayer =0;
+		foreach(GameObject otherSeeker in otherSeekers)
+		{
+			SeekerAI otherSeekerScript = (SeekerAI)otherSeeker.GetComponent("SeekerAI");
+			if(otherSeekerScript.currentSeekerState == (int)SeekerAI.SeekerState.FoundPlayer)
+			{
+				numberOfSeekersThatFoundPlayer += 1;
+			}
+		}// end of foreach(GameObject otherSeeker in otherSeekers)
+		if(numberOfSeekersThatFoundPlayer >= 2)
+		{
+			ActivateMenu("Retry Menu");
+		}
+		
 		menuWidth = Screen.width -50f;
 		menuHeight = Screen.height -50f;
-		 if (Time.time == gameStart)
+		if (Time.time == gameStart)
         {
             menuActive = true;
 			theHeadsUpDisplay.headsUpDisplayActive = false;
@@ -140,7 +173,7 @@ public class StartGameMenu : MonoBehaviour
 					GameObject.Find("Flashlight").GetComponent<Flashlight>().enabled = true;
 					GameObject.Find("Main Camera").GetComponent<MouseLook>().enabled = true;
 					
-					//hide the menu start time
+					//hide the menu, start time
 					Time.timeScale = 1;
 	                menuActive = false;
 					
