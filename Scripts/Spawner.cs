@@ -5,7 +5,7 @@ public class Spawner : MonoBehaviour
 {
 	#region variable declaration
 	//public GameObject AITankUnit;
-	//public Object PlayerTankUnit;
+	public Object PlayerFirstPerson;
 	public StartGameMenu theStartMenu;
 //	public GameObject[] AITanks;
 	
@@ -37,14 +37,14 @@ public class Spawner : MonoBehaviour
 //		{
 //			Debug.Log("AITank Not found, check tags");
 //		} // end if AITank exists
-//		if (PlayerTankUnit == null && GameObject.FindGameObjectWithTag("Player"))	
-//		{
-//			PlayerTankUnit = Resources.Load("PlayerTank", typeof(Object)); //GameObject.FindGameObjectWithTag("Player");
-//		}
-//		else
-//		{
-//			Debug.Log("Player Not found, check tags");
-//		} // end if player tank exists
+		if (PlayerFirstPerson == null && GameObject.FindGameObjectWithTag("Player"))	
+		{
+			PlayerFirstPerson = Resources.Load("PlayerFirstPerson", typeof(Object)); //GameObject.FindGameObjectWithTag("Player");
+		}
+		else
+		{
+			Debug.Log("Player Not found, check tags");
+		} // end if player tank exists
 	}
 	
 	// Update is called once per frame
@@ -99,15 +99,15 @@ public class Spawner : MonoBehaviour
 //		GameObject Enemy = (GameObject) Instantiate(AITankUnit, spawnPosition, Quaternion.identity); //gameObject.transform.position
 //		 //GameObject instance = Instantiate(Resources.Load("enemy", typeof(GameObject)));
 //	}
-//	public void SpawnPlayerTank()
-//	{
-//		Debug.Log("Spawning player");
-//		// Randomize starting location
-//		spawnPosition.x = 40.0f*UnityEngine.Random.value - 40f;
-//		spawnPosition.y = 11.0f;
-//		spawnPosition.z = 60.0f*UnityEngine.Random.value - 40f;
-//		GameObject Player = (GameObject)Instantiate(PlayerTankUnit, spawnPosition, Quaternion.identity) as GameObject; //gameObject.transform.position
-//	}
+	public void SpawnPlayer()
+	{
+		Debug.Log("Spawning player");
+		// Randomize starting location
+		spawnPosition.x = 40.0f*UnityEngine.Random.value - 40f;
+		spawnPosition.y = 11.0f;
+		spawnPosition.z = 60.0f*UnityEngine.Random.value - 40f;
+		GameObject Player = (GameObject)Instantiate(PlayerFirstPerson, spawnPosition, Quaternion.identity) as GameObject; //gameObject.transform.position
+	}
 }
 /* Refrence
  * // AUTHOR:Garth de Wet (Corrupted Heart)
