@@ -7,6 +7,7 @@ public class HeadsUpDisplay : MonoBehaviour
 	public bool headsUpDisplayActive;
 	//public TankController thePlayerTank;
 	public StartGameMenu theStartMenu;
+	public SeekerAI theSeekerAI;
 	
 	// Start timer characteristics
 	public float countdown = 3f;
@@ -15,6 +16,7 @@ public class HeadsUpDisplay : MonoBehaviour
 	public float seconds;
 	public float fraction;
 	string countdownMessage; // format displayed to user.
+	public float sprintTimer;
 	
 	public float playerScore;
 	#endregion
@@ -89,15 +91,45 @@ public class HeadsUpDisplay : MonoBehaviour
 			seconds = Mathf.Floor(currentTime % 60);
 			fraction = currentTime * 10;
 			fraction = fraction % 10;
-			//HUD Box
-			GUI.Box(new Rect(10, 30, 150f, 45), "");//left, top, width, height
-			GUI.Label(new Rect(20, 30, 110, 20), "Timer: " + minutes + ":" + seconds + ":" + fraction.ToString("F2"));
 			
-			//GUI.Label(new Rect(10, 120, 200, 20), "Health = " + thePlayerTank.health);
-			GUI.Label(new Rect(20, 50, 150, 20), "Number Of Seekers: " + theStartMenu.numberOfSeekers);			//GUI.Label(new Rect(10, 160, 200, 20), "Enemies Destroyed = " + playerScore);	
-
+			//Calculating Sprinting
+			sprintTimer = 4f;
+			/*if()
+			{
+				if(sprintTimer >= 0)
+				{
+					sprintTimer -= Time.deltaTime;
+				}
+			}
+			if()
+			{
+				if(sprintTimer < 4)
+				{
+					sprintTimer += Time.deltaTime;
+				}
+			}
+			*/
+			//HUD Box
+			GUI.Box(new Rect(10, 30, 150f, 65), "");//left, top, width, height
+			GUI.Label(new Rect(20, 30, 110, 20), "Timer: " + minutes + ":" + seconds + ":" + fraction.ToString("F2"));
+			GUI.Label(new Rect(20, 50, 150, 20), "Number Of Seekers: " + theStartMenu.numberOfSeekers);			
+			GUI.Label(new Rect(20, 70, 190, 20), "Sprint Time: " + sprintTimer.ToString("F2"));
+			
+			//alert box and message
+			GUI.Box(new Rect(10, 90, 275f, 65), "");//left, top, width, height
+			GUI.Label(new Rect(20, 100, 275, 20), "A Seeker has Found Your Location,");
+			GUI.Label(new Rect((Screen.width -280) / 2, ((Screen.height / 2)-200), 275, 40), "+Get Away Before the other Seekers Arrive");
+			GUI.Label(new Rect((Screen.width -280) / 2, ((Screen.height / 2)-40), 275, 40), "-Get Away Before the other Seekers Arrive");
+			
+			//Player alert message
+			/*if()
+			{
+				GUI.Box(new Rect(10, 90, 210f, 65), "");//left, top, width, height
+				GUI.Label(new Rect(20, 100, 200, 20), "A Seeker has Detected your Presence, Get Away Before Renforcements Arrive");
+			}
+			*/
 			// display the countdown to start
-		if(countdown >= 0.0f)
+		if(countdown >= 0f)
     	{ 
 			countdownMessage = countdown.ToString();
 			countdownMessage  = countdownMessage.Substring(0,4);
